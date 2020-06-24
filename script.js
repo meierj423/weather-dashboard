@@ -58,28 +58,45 @@ $(function () {
       method: "GET",
     }).then(function (response) {
       var forecastDays = [];
-      console.log(forecastDays);
+      // console.log(forecastDays);
       forecastDays.push(response.list[0]);
       forecastDays.push(response.list[8]);
       forecastDays.push(response.list[16]);
       forecastDays.push(response.list[24]);
       forecastDays.push(response.list[32]);
-      console.log(forecastDays);
       $("#currentCity").html("<h2>" + response.city.name + "<h2>");
 
       //   $("#forecast").html(
       //     "<pre>" + JSON.stringify(forecastDays, null, 2) + "</pre>"
       //   );
       for (var i = 0; i < forecastDays.length; i++) {
-        var forecastContainer = $("<div>").addClass("forecast-day");
-        var dateEl = $("<div>").html(forecastDays[i].dt_txt);
-        var iconEl = $("<div>").html(forecastDays[i].weather[0].icon);
-        var tempEl = $("<div>").text("Temp: 80F");
-        var humidityEl = $("<div>").text("Humidity: 35%");
+        var timestamp = forecastDays[i].dt;
+        var date = new Date(timestamp * 1000).toLocaleDateString();
+        var icon = forecastDays[i].weather[0].icon;
+        console.log(icon);
 
-        forecastContainer.append(dateEl, iconEl, tempEl, humidityEl);
-        $("#forecast").append(forecastContainer);
+        // var forecastContainer = $("<div>").addClass("forecast-day");
+        var forecastCard = $("<div>").addClass("card text-white bg-primary mb-3").attr("id", "forecast-card").attr("style", "max-width: 18rem");
+        $("#forecast").prepend(forecastCard);
+
+        var cardBody = $("<div>").addClass("card-body").attr("id", "cardBody");
+        $("#forecast-card").append(cardBody);
+
+        var cardTitle = $("<div>").addClass("card-title");
+        $("#cardBody").append(cardTitle);
+
+        $(".card-title").html(date);
+        var iconImg = $("<img>").addClass("icon-image")
+        $(".card-text1").append(iconImg);
+        iconImg.attr("src", "http://openweathermap.org/img/wn/" + icon + "@2x.png")
+        $(".card-text2").html(forecastDays[i].main.temp + "°F");
+        $(".card-text3").html(forecastDays[i].main.humidity + "%");
+
+        // forecastContainer.append(dateEl, iconEl, tempEl, humidityEl);
+        // $("#forecast").append(forecastContainer);
       }
     });
   }
 });
+
+// "src", "http://openweathermap.org/img/wn/" + forecastDays[i].weather[0].icon + "@2x.png"
