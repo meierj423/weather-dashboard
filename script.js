@@ -7,6 +7,7 @@ $(function () {
 
   function handleSearch(event) {
     event.preventDefault();
+
     var city = $("#city-input").val();
 
     var APIKey = "3cb3221cf83645ed701a2873e477b9b9";
@@ -23,12 +24,22 @@ $(function () {
     }).then(function (response) {
       var currentTimestamp = response.dt;
       var currentDate = new Date(currentTimestamp * 1000).toLocaleDateString();
-
       var currentIcon = response.weather[0].icon;
       var currentImg = $("<img>").attr(
         "src",
         "http://openweathermap.org/img/wn/" + currentIcon + "@2x.png"
       );
+
+      // Storing previous cities
+      var previousCities = $("<div>").attr("id", "previous-cities");
+      $("#cityCol").append(previousCities);
+      var currentCity = response.name;
+      localStorage.setItem("Previous City", currentCity);
+      $("#previous-cities")
+        .html(localStorage.getItem("Previous City"))
+        .css("border", "dashed")
+        .css("background-color", "darkgrey")
+        .css("color", "black");
 
       var currentTemp = response.main.temp;
       var currentHumidity = response.main.humidity;
@@ -55,19 +66,19 @@ $(function () {
         method: "GET",
       }).then(function (response) {
         currentUV = response.value;
-        $("#currentUV").html("UV Index: " + currentUV).width("130px");
+        $("#currentUV")
+          .html("UV Index: " + currentUV)
+          .width("130px");
 
         if (currentUV > 8) {
           $("#currentUV").css("background-color", "red");
           $("#currentUV").css("color", "white");
-        }
-        else if (currentUV < 2) {
+        } else if (currentUV < 2) {
           $("#currentUV").css("background-color", "green");
-          $("#currentUV").css("color", "white")
-        }
-        else {
+          $("#currentUV").css("color", "white");
+        } else {
           $("#currentUV").css("background-color", "orange");
-          $("#currentUV").css("color", "black")
+          $("#currentUV").css("color", "black");
         }
       });
     });
